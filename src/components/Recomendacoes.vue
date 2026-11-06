@@ -18,19 +18,24 @@ defineProps<{
       <a href="#">Explorar</a>
     </div>
 
-    <div class="trending-grid">
-      <article v-for="item in items" :key="item.title" class="trending-card">
-        <div class="trending-poster" :style="{ background: `linear-gradient(180deg, ${item.accent} 0%, rgba(13,18,30,0.22) 100%)` }">
-          <img v-if="item.poster" :src="item.poster" :alt="`Poster de ${item.title}`" class="trending-image">
-          <span class="happy-overlay" aria-hidden="true">😊</span>
-          <span class="play-button">▶</span>
-        </div>
-        <div class="trending-body">
-          <h4>{{ item.title }}</h4>
-          <p>{{ item.caption }}</p>
+    <div v-if="items.length" class="row g-3 g-lg-4">
+      <article v-for="item in items" :key="item.title" class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="trending-card card h-100 shadow rounded-4">
+          <div class="trending-poster" :style="{ background: `linear-gradient(180deg, ${item.accent} 0%, rgba(13,18,30,0.22) 100%)` }">
+            <img v-if="item.poster" :src="item.poster" :alt="`Poster de ${item.title}`" class="trending-image">
+            <span class="happy-overlay" aria-hidden="true">😊</span>
+            <span class="play-button" aria-hidden="true">▶</span>
+          </div>
+          <div class="trending-body card-body">
+            <h4>{{ item.title }}</h4>
+            <p>{{ item.caption }}</p>
+          </div>
         </div>
       </article>
     </div>
+    <p v-else class="empty-state text-center mb-0" role="status">
+      Nenhum filme encontrado para essa busca.
+    </p>
   </section>
 </template>
 
@@ -51,41 +56,40 @@ defineProps<{
 .section-header h3 {
   margin: 0;
   color: #f5f7ff;
-  font-size: 1.75rem;
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
   letter-spacing: -0.04em;
 }
 
 .section-header a {
-  color: var(--accent-pink);
+  color: #ff8b8b;
   text-decoration: none;
   font-weight: 600;
 }
 
-.trending-grid {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+.empty-state {
+  padding: 28px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  color: rgba(255, 255, 255, 0.68);
 }
 
 .trending-card {
   display: flex;
   flex-direction: column;
-  gap: 14px;
   width: 100%;
-  max-width: 320px;
-  margin-inline: auto;
-  transition: transform 0.25s ease;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #17171b;
+  color: #fff;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .trending-poster {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 5;
-  border-radius: 24px;
-  border: 1px solid rgba(71, 232, 255, 0.2);
   overflow: hidden;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .trending-poster::before {
@@ -148,7 +152,7 @@ defineProps<{
 .trending-body h4 {
   margin: 0;
   color: #f4f6ff;
-  font-size: 1.35rem;
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
   letter-spacing: -0.04em;
 }
 
@@ -159,12 +163,12 @@ defineProps<{
 
 @media (hover: hover) {
   .trending-card:hover {
-    transform: translateY(-6px);
+    transform: translateY(-5px);
+    border-color: rgba(229, 9, 20, 0.6);
   }
 
-  .trending-card:hover .trending-poster {
-    border-color: rgba(71, 232, 255, 0.72);
-    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.3), 0 0 24px rgba(71, 232, 255, 0.16);
+  .trending-card:hover {
+    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.36), 0 0 24px rgba(229, 9, 20, 0.12) !important;
   }
 
   .trending-card:hover .trending-image {
@@ -197,15 +201,4 @@ defineProps<{
   }
 }
 
-@media (max-width: 980px) {
-  .trending-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 640px) {
-  .trending-grid {
-    grid-template-columns: 1fr;
-  }
-}
 </style>

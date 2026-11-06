@@ -24,25 +24,31 @@ const lowestProgress = computed(() => Math.min(...props.items.map((item) => item
       <a href="#">Ver tudo</a>
     </div>
 
-    <div class="movie-row">
-      <article v-for="item in items" :key="item.title" class="mini-showcase">
-        <div class="mini-poster" :style="{ background: item.gradient }">
-          <img :src="item.poster" :alt="`Poster de ${item.title}`" class="mini-poster-image">
-          <span class="happy-overlay" aria-hidden="true">😊</span>
-        </div>
-        <div class="mini-info">
-          <strong>{{ item.title }}</strong>
-          <span>{{ item.genre }}</span>
-          <div class="progress-label">
-            <span>Progresso</span>
-            <strong>
-              {{ item.progress }}%
-              <span v-if="item.progress === highestProgress" class="progress-mood" role="img" aria-label="Maior progresso">🔥</span>
-              <span v-else-if="item.progress === lowestProgress" class="progress-mood" role="img" aria-label="Menor progresso">😢</span>
-            </strong>
+    <div class="row g-3">
+      <article
+        v-for="item in items"
+        :key="item.title"
+        class="col-12 col-md-6 col-lg-4"
+      >
+        <div class="mini-showcase card h-100 shadow rounded-4">
+          <div class="mini-poster" :style="{ background: item.gradient }">
+            <img :src="item.poster" :alt="`Poster de ${item.title}`" class="mini-poster-image">
+            <span class="happy-overlay" aria-hidden="true">😊</span>
           </div>
-          <div class="progress-track">
-            <span :style="{ width: item.progress + '%' }"></span>
+          <div class="mini-info card-body">
+            <strong>{{ item.title }}</strong>
+            <span>{{ item.genre }}</span>
+            <div class="progress-label">
+              <span>Progresso</span>
+              <strong>
+                {{ item.progress }}%
+                <span v-if="item.progress === highestProgress" class="progress-mood" role="img" aria-label="Maior progresso">🔥</span>
+                <span v-else-if="item.progress === lowestProgress" class="progress-mood" role="img" aria-label="Menor progresso">😢</span>
+              </strong>
+            </div>
+            <div class="progress-track">
+              <span :style="{ width: item.progress + '%' }"></span>
+            </div>
           </div>
         </div>
       </article>
@@ -67,38 +73,33 @@ const lowestProgress = computed(() => Math.min(...props.items.map((item) => item
 .section-header h3 {
   margin: 0;
   color: #f5f7ff;
-  font-size: 1.75rem;
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
   letter-spacing: -0.04em;
 }
 
 .section-header a {
-  color: #ffb89c;
+  color: #ff8b8b;
   text-decoration: none;
   font-weight: 600;
 }
 
-.movie-row {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .mini-showcase {
   display: flex;
-  gap: 16px;
+  flex-direction: row;
   align-items: center;
-  padding: 16px 18px;
-  border: 1px solid rgba(71, 232, 255, 0.12);
-  background: linear-gradient(120deg, rgba(71, 232, 255, 0.045), rgba(255, 79, 154, 0.025));
-  border-radius: 24px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.045), rgba(229, 9, 20, 0.035));
+  color: #fff;
   transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .mini-poster {
   position: relative;
-  width: 96px;
-  height: 120px;
-  border-radius: 18px;
+  width: 104px;
+  min-height: 138px;
+  align-self: stretch;
+  border-radius: 14px;
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -143,6 +144,7 @@ const lowestProgress = computed(() => Math.min(...props.items.map((item) => item
   flex-direction: column;
   gap: 8px;
   min-width: 0;
+  padding: 12px;
 }
 
 .mini-info strong {
@@ -169,7 +171,7 @@ const lowestProgress = computed(() => Math.min(...props.items.map((item) => item
 }
 
 .mini-info .progress-label strong {
-  color: var(--accent-gold);
+  color: var(--accent-red);
   font-size: 0.82rem;
 }
 
@@ -191,8 +193,8 @@ const lowestProgress = computed(() => Math.min(...props.items.map((item) => item
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-pink));
-  box-shadow: 0 0 12px rgba(71, 232, 255, 0.36);
+  background: linear-gradient(90deg, var(--accent-red), #ff795f);
+  box-shadow: 0 0 12px rgba(229, 9, 20, 0.36);
   transform: scaleX(0);
   transform-origin: left;
   animation: progress-fill 1s cubic-bezier(0.22, 0.8, 0.25, 1) forwards;
@@ -224,8 +226,8 @@ const lowestProgress = computed(() => Math.min(...props.items.map((item) => item
 @media (hover: hover) {
   .mini-showcase:hover {
     transform: translateY(-5px);
-    border-color: rgba(71, 232, 255, 0.48);
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.24), 0 0 24px rgba(71, 232, 255, 0.1);
+    border-color: rgba(229, 9, 20, 0.55);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.3), 0 0 24px rgba(229, 9, 20, 0.12);
   }
 
   .mini-showcase:hover .mini-poster-image {
@@ -239,7 +241,7 @@ const lowestProgress = computed(() => Math.min(...props.items.map((item) => item
 
   .mini-showcase:hover .progress-track > span {
     filter: brightness(1.2);
-    box-shadow: 0 0 18px rgba(71, 232, 255, 0.68);
+    box-shadow: 0 0 18px rgba(229, 9, 20, 0.68);
   }
 
   .mini-showcase:hover .progress-track > span::after {
@@ -275,9 +277,4 @@ const lowestProgress = computed(() => Math.min(...props.items.map((item) => item
   }
 }
 
-@media (max-width: 980px) {
-  .movie-row {
-    grid-template-columns: 1fr;
-  }
-}
 </style>

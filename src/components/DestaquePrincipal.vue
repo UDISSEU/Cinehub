@@ -1,6 +1,6 @@
 <template>
-  <section class="hero">
-    <div class="hero-copy">
+  <section class="hero row align-items-center g-4">
+    <div class="hero-copy col-12 col-lg-6">
       <span class="eyebrow">Em alta agora</span>
       <h1>O reino das sombras não conhece perdão.</h1>
       <p>
@@ -9,8 +9,8 @@
       </p>
 
       <div class="cta-row">
-        <button class="primary-button large">▶ Assistir</button>
-        <button class="secondary-button large">+ Minha lista</button>
+        <button class="btn btn-primary primary-button large" type="button">▶ Assistir</button>
+        <button class="btn btn-outline-light secondary-button large" type="button">+ Minha lista</button>
       </div>
 
       <div class="meta-row">
@@ -21,7 +21,7 @@
       </div>
     </div>
 
-    <div class="hero-visual" aria-label="Poster do filme do destaque">
+    <div class="hero-visual col-12 col-lg-6" aria-label="Poster do filme do destaque">
       <div class="poster-glow"></div>
       <div class="movie-card large-card">
         <img src="/sombra.jpeg" alt="Poster de Sombras do Norte" class="featured-poster">
@@ -46,12 +46,10 @@
 
 <style scoped>
 .hero {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 32px;
-  align-items: center;
-  min-height: 560px;
+  min-height: 540px;
   padding: 16px 6px 0;
+  margin-right: 0;
+  margin-left: 0;
 }
 
 .hero-copy {
@@ -66,8 +64,8 @@
   align-items: center;
   padding: 8px 14px;
   border-radius: 999px;
-  background: rgba(71, 232, 255, 0.1);
-  border: 1px solid rgba(71, 232, 255, 0.32);
+  background: rgba(229, 9, 20, 0.1);
+  border: 1px solid rgba(229, 9, 20, 0.32);
   color: var(--accent-cyan);
   font-size: 0.72rem;
   letter-spacing: 0.12em;
@@ -119,16 +117,17 @@
 }
 
 .primary-button {
-  background: linear-gradient(135deg, var(--accent-pink), #ff8a4c);
+  background: linear-gradient(135deg, var(--accent-red), #ff674d);
+  border-color: var(--accent-red);
   color: white;
   font-weight: 700;
-  box-shadow: 0 14px 28px rgba(255, 79, 154, 0.32);
+  box-shadow: 0 14px 28px rgba(229, 9, 20, 0.28);
 }
 
 .secondary-button {
   background: rgba(255, 255, 255, 0.08);
   color: white;
-  border: 1px solid rgba(71, 232, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .hero-visual {
@@ -144,8 +143,8 @@
   inset: 40px 80px 50px 80px;
   border-radius: 40px;
   background:
-    radial-gradient(circle at 40% 42%, rgba(71, 232, 255, 0.24), transparent 62%),
-    radial-gradient(circle at 62% 58%, rgba(255, 79, 154, 0.25), transparent 68%);
+    radial-gradient(circle at 40% 42%, rgba(229, 9, 20, 0.2), transparent 62%),
+    radial-gradient(circle at 62% 58%, rgba(255, 103, 77, 0.22), transparent 68%);
   filter: blur(18px);
 }
 
@@ -155,7 +154,7 @@
   height: 520px;
   border-radius: 34px;
   overflow: hidden;
-  border: 1px solid rgba(71, 232, 255, 0.34);
+  border: 1px solid rgba(229, 9, 20, 0.34);
   background: linear-gradient(160deg, rgba(9, 12, 17, 0.16), rgba(8, 10, 17, 0));
   box-shadow: 0 34px 52px rgba(0, 0, 0, 0.46);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -167,7 +166,7 @@
   z-index: 1;
   background:
     linear-gradient(180deg, rgba(12, 15, 25, 0.02) 18%, rgba(8, 10, 17, 0.82) 100%),
-    linear-gradient(135deg, rgba(255, 79, 154, 0.12), transparent 52%, rgba(71, 232, 255, 0.16));
+    linear-gradient(135deg, rgba(229, 9, 20, 0.12), transparent 52%, rgba(255, 103, 77, 0.12));
 }
 
 .movie-card::before {
@@ -215,8 +214,8 @@
   display: inline-block;
   padding: 7px 12px;
   border-radius: 999px;
-  background: rgba(71, 232, 255, 0.22);
-  border: 1px solid rgba(71, 232, 255, 0.48);
+  background: rgba(229, 9, 20, 0.22);
+  border: 1px solid rgba(229, 9, 20, 0.48);
   color: #fff;
   font-size: 0.68rem;
   text-transform: uppercase;
@@ -273,7 +272,7 @@
   flex-direction: column;
   gap: 4px;
   padding: 14px 16px;
-  border: 1px solid rgba(71, 232, 255, 0.26);
+  border: 1px solid rgba(229, 9, 20, 0.26);
   background: rgba(8, 18, 30, 0.76);
   backdrop-filter: blur(8px);
   border-radius: 18px;
@@ -312,18 +311,18 @@
 
 @media (max-width: 980px) {
   .hero {
-    grid-template-columns: 1fr;
     min-height: auto;
   }
 }
 
 @media (max-width: 640px) {
   .hero-copy h1 {
-    font-size: 2.5rem;
+    font-size: clamp(2.35rem, 11vw, 3rem);
   }
 
   .movie-card {
-    height: 420px;
+    height: min(420px, 112vw);
+    min-height: 320px;
   }
 
   .floating-badge {

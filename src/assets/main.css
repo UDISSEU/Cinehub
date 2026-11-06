@@ -1,11 +1,14 @@
-@import './base.css';
-
 :root {
-  --accent-cyan: #47e8ff;
-  --accent-pink: #ff4f9a;
-  --accent-gold: #ffe56a;
-  color: #f4f7ff;
-  background: #070b14;
+  --accent-red: #e50914;
+  --accent-cyan: #f04452;
+  --accent-pink: #e50914;
+  --accent-gold: #ffd166;
+  --bs-primary: #e50914;
+  --bs-body-color: #f4f4f5;
+  --bs-body-bg: #0d0d10;
+  color-scheme: dark;
+  color: #f4f4f5;
+  background: #0d0d10;
   font-family: Inter, 'Segoe UI', sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -20,11 +23,11 @@
 }
 
 html {
+  min-width: 320px;
+  overflow-x: hidden;
   background:
-    radial-gradient(ellipse at 12% 8%, rgba(71, 232, 255, 0.2), transparent 30%),
-    radial-gradient(ellipse at 88% 14%, rgba(255, 79, 154, 0.19), transparent 34%),
-    radial-gradient(ellipse at 52% 92%, rgba(255, 229, 106, 0.08), transparent 34%),
-    linear-gradient(160deg, #070b14 0%, #10101d 52%, #07131b 100%);
+    radial-gradient(ellipse at 10% 5%, rgba(229, 9, 20, 0.12), transparent 32%),
+    linear-gradient(160deg, #0d0d10 0%, #17171b 52%, #0b0b0e 100%);
   background-attachment: fixed;
 }
 
@@ -32,13 +35,27 @@ body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
+  overflow-x: hidden;
   background: transparent;
-  color: #f4f7ff;
+  color: #f4f4f5;
 }
 
 button,
 a {
   font: inherit;
+}
+
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--accent-red);
+  --bs-btn-border-color: var(--accent-red);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #bf0710;
+  --bs-btn-hover-border-color: #bf0710;
+  --bs-btn-active-bg: #a9060e;
+  --bs-btn-active-border-color: #a9060e;
+  --bs-btn-focus-shadow-rgb: 229, 9, 20;
+  font-weight: 650;
 }
 
 #app {
