@@ -1,61 +1,98 @@
+<script setup lang="ts">
+import { computed } from 'vue'
+import type { CatalogItem } from '../types/catalog'
+import FavoriteButton from './FavoriteButton.vue'
+import { useImageFallback } from '../utils/imageFallback'
+
+const props = defineProps<{ item: CatalogItem }>()
+const detailsRoute = computed(() => ({
+  name: props.item.type === 'movie' ? 'movie-details' : 'series-details',
+  params: { id: props.item.tmdbId },
+}))
+</script>
+
 <template>
-  <section class="hero row align-items-center g-4">
+  <section
+    class="featured-hero row align-items-center g-4 g-lg-5"
+    :style="{ '--hero-backdrop': `url('${item.backdrop}')` }"
+  >
     <div class="hero-copy col-12 col-lg-6">
-      <span class="eyebrow">Em alta agora</span>
-      <h1>O reino das sombras não conhece perdão.</h1>
-      <p>
-        Uma jornada intensa de traição, coragem e sobrevivência, repleta de cenas eletrizantes
-        e momentos que vão te prender do começo ao fim.
-      </p>
+      <span class="eyebrow">Em tendência</span>
+      <h1>{{ item.title }}</h1>
+      <p v-if="item.tagline" class="hero-tagline">{{ item.tagline }}</p>
+      <p>{{ item.description || 'Sinopse não disponível.' }}</p>
 
       <div class="cta-row">
-        <button class="btn btn-primary primary-button large" type="button">▶ Assistir</button>
-        <button class="btn btn-outline-light secondary-button large" type="button">+ Minha lista</button>
+        <RouterLink :to="detailsRoute" class="btn btn-primary primary-button large">Ver detalhes</RouterLink>
+        <FavoriteButton :item-id="item.id" />
       </div>
 
       <div class="meta-row">
-        <span>4.9 ★</span>
-        <span>2026</span>
-        <span>Drama • Ação</span>
-        <span>108 min</span>
+        <span v-if="item.rating">★ {{ item.rating.toFixed(1) }}</span>
+        <span v-if="item.releaseYear">{{ item.releaseYear }}</span>
+        <span v-if="item.genres.length">{{ item.genres.slice(0, 3).join(' • ') }}</span>
+        <span v-if="item.durationMinutes">{{ item.durationMinutes }} min</span>
       </div>
     </div>
 
-    <div class="hero-visual col-12 col-lg-6" aria-label="Poster do filme do destaque">
+    <div class="hero-visual col-12 col-lg-6">
       <div class="poster-glow"></div>
-      <div class="movie-card large-card">
-        <img src="/sombra.jpeg" alt="Poster de Sombras do Norte" class="featured-poster">
+      <RouterLink :to="detailsRoute" class="movie-card large-card" :aria-label="`Ver detalhes de ${item.title}`">
+        <img
+          :src="item.backdrop"
+          :alt="`Imagem de ${item.title}`"
+          class="featured-poster"
+          @error="useImageFallback"
+          width="440"
+          height="520"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        >
         <div class="poster-overlay"></div>
         <span class="happy-overlay" aria-hidden="true">😊</span>
         <div class="poster-content">
-          <span class="tag">Top 10</span>
-          <h2>Sombras do Norte</h2>
+          <span class="tag">Em tendência</span>
+          <h2>{{ item.title }}</h2>
         </div>
-        <div class="floating-badge info-badge">
-          <span class="tiny-label">Nota</span>
-          <strong>9.7</strong>
-        </div>
-        <div class="floating-badge genre-badge">
-          <span class="tiny-label">Gênero</span>
-          <strong>Fantasia</strong>
-        </div>
-      </div>
+        <span v-if="item.rating" class="floating-badge info-badge">
+          <span class="tiny-label">Nota TMDB</span>
+          <strong>{{ item.rating.toFixed(1) }}</strong>
+        </span>
+      </RouterLink>
     </div>
   </section>
 </template>
 
 <style scoped>
-.hero {
+.featured-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   min-height: 540px;
-  padding: 16px 6px 0;
+  padding: clamp(24px, 4vw, 56px) 0;
+  border-radius: 22px;
   margin-right: 0;
   margin-left: 0;
 }
 
+.featured-hero::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image:
+    linear-gradient(90deg, rgba(13, 13, 16, 0.96) 0%, rgba(13, 13, 16, 0.82) 52%, rgba(13, 13, 16, 0.56) 100%),
+    var(--hero-backdrop);
+  background-position: center;
+  background-size: cover;
+  content: '';
+}
+
 .hero-copy {
   display: flex;
+  min-width: 0;
   flex-direction: column;
-  gap: 18px;
+  gap: clamp(14px, 2vw, 22px);
 }
 
 .eyebrow {
@@ -74,26 +111,33 @@
 
 .hero-copy h1 {
   margin: 0;
-  font-size: clamp(3rem, 4vw, 5.5rem);
-  line-height: 0.96;
-  letter-spacing: -0.06em;
+  font-size: clamp(2rem, 5vw, 4.75rem);
+  line-height: 1.04;
+  letter-spacing: -0.045em;
   max-width: 640px;
   color: #f5f7ff;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 .hero-copy p {
   margin: 0;
-  max-width: 620px;
+  max-width: 58ch;
   color: rgba(234, 239, 255, 0.72);
-  font-size: 1.08rem;
+  font-size: clamp(1rem, 1.3vw, 1.125rem);
   line-height: 1.7;
+}
+
+.hero-tagline {
+  color: var(--accent-gold) !important;
+  font-weight: 600;
 }
 
 .cta-row,
 .meta-row {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
@@ -108,12 +152,14 @@
 
 .primary-button,
 .secondary-button {
-  min-height: 52px;
-  padding: 0 28px;
+  min-height: 48px;
+  padding: 10px clamp(16px, 2vw, 24px);
   border: 0;
   border-radius: 999px;
   cursor: pointer;
   font: inherit;
+  font-size: clamp(0.9rem, 2.4vw, 1rem);
+  white-space: nowrap;
 }
 
 .primary-button {
@@ -135,12 +181,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 500px;
+  min-height: clamp(360px, 40vw, 500px);
 }
 
 .poster-glow {
   position: absolute;
-  inset: 40px 80px 50px 80px;
+  inset: 40px clamp(20px, 7vw, 80px) 50px;
   border-radius: 40px;
   background:
     radial-gradient(circle at 40% 42%, rgba(229, 9, 20, 0.2), transparent 62%),
@@ -150,13 +196,15 @@
 
 .movie-card {
   position: relative;
-  width: min(440px, 90%);
+  width: min(440px, 100%);
   height: 520px;
   border-radius: 34px;
   overflow: hidden;
   border: 1px solid rgba(229, 9, 20, 0.34);
   background: linear-gradient(160deg, rgba(9, 12, 17, 0.16), rgba(8, 10, 17, 0));
   box-shadow: 0 34px 52px rgba(0, 0, 0, 0.46);
+  color: #fff;
+  text-decoration: none;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -206,8 +254,9 @@
 
 .poster-content {
   position: absolute;
-  inset: auto 28px 28px 28px;
+  inset: auto 24px 24px;
   z-index: 3;
+  max-width: calc(100% - 48px);
 }
 
 .tag {
@@ -224,10 +273,12 @@
 
 .poster-content h2 {
   margin: 16px 0 0;
-  font-size: clamp(2.4rem, 2.2vw, 3.5rem);
-  line-height: 0.9;
-  letter-spacing: -0.06em;
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
   color: white;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 @media (hover: hover) {
@@ -309,24 +360,54 @@
   color: var(--accent-cyan);
 }
 
-@media (max-width: 980px) {
-  .hero {
+@media (max-width: 991.98px) {
+  .featured-hero {
     min-height: auto;
   }
-}
 
-@media (max-width: 640px) {
-  .hero-copy h1 {
-    font-size: clamp(2.35rem, 11vw, 3rem);
+  .hero-visual {
+    min-height: 0;
+    padding: 8px 0 16px;
   }
 
   .movie-card {
-    height: min(420px, 112vw);
-    min-height: 320px;
+    width: min(440px, 100%);
+  }
+}
+
+@media (max-width: 575.98px) {
+  .featured-hero {
+    padding-top: 20px;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+
+  .hero-copy p {
+    line-height: 1.6;
+  }
+
+  .movie-card {
+    width: min(440px, 100%);
+    height: clamp(300px, 105vw, 420px);
   }
 
   .floating-badge {
-    transform: scale(0.9);
+    padding: 10px 12px;
+  }
+
+  .genre-badge {
+    left: 12px;
+  }
+
+  .info-badge {
+    right: 12px;
+  }
+
+  .poster-content {
+    inset: auto 18px 20px;
+    max-width: calc(100% - 36px);
   }
 }
 </style>

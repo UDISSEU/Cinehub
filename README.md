@@ -1,42 +1,38 @@
 # CineHub
 
-Este modelo ajuda você a começar a desenvolver com Vue 3 no Vite.
+Aplicação de descoberta de filmes e séries com Vue 3, Vite, Vue Router e dados do TMDB.
 
-## Configuração recomendada do IDE
+## Configuração da API
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Oficial)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (e desative o Vetur).
+1. Crie uma conta no [TMDB](https://www.themoviedb.org/) e solicite o **API Read Access Token** nas configurações de API.
+2. Crie `.env.local` na raiz do projeto (use `.env.example` como modelo) e configure:
 
-## Configuração recomendada do navegador
+   ```env
+   TMDB_ACCESS_TOKEN=
+   ```
 
-- Navegadores baseados em Chromium (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Ative o Custom Object Formatter no Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Ative o Custom Object Formatter no Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+3. Execute `npm run dev`. O comando inicia o proxy Node local e o Vite; o token só é lido pelo servidor intermediário.
 
-## Suporte de tipos para imports `.vue` em TypeScript
+Preencha `TMDB_ACCESS_TOKEN` com o API Read Access Token e reinicie o servidor. O frontend usa somente `/api/tmdb/3`; o proxy mantém a credencial no processo Node. Não configure o token com prefixo `VITE_`.
 
-O TypeScript não consegue lidar com informações de tipos para imports `.vue` por padrão; por isso, substituímos a CLI `tsc` por `vue-tsc` para checagem de tipos. Nos editores, precisamos do [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) para que o serviço de TypeScript reconheça corretamente os tipos `.vue`.
+Os arquivos `.env`, `.env.local` e `.env.*.local` são ignorados pelo Git. Não configure o token como `VITE_TMDB_ACCESS_TOKEN`: variáveis com prefixo `VITE_` ficam expostas no navegador. O proxy lê `TMDB_ACCESS_TOKEN` somente no processo Node.
 
-## Personalizar a configuração
+`.env.local` é ignorado pelo Git. Nunca use o prefixo `VITE_` no token: variáveis com esse prefixo são incluídas no bundle do navegador. O proxy em `server/tmdbProxy.js` encaminha somente requisições GET para o host fixo do TMDB e mantém o Bearer token no processo Node. Em produção, implante esse proxy em um backend e configure o servidor web para encaminhar `/api/tmdb/3` para ele; não publique o token no frontend.
 
-Consulte a [referência de configuração do Vite](https://vite.dev/config/).
+`src/services/tmdb.ts` centraliza autenticação Bearer, idioma `pt-BR`, URLs de imagem, cache de respostas, paginação e tratamento de erros de conexão, autenticação e limite de requisições.
 
-## Configuração do projeto
+## Executar
 
-```sh
-npm install
-```
-
-### Compilar e recarregar em tempo real para desenvolvimento
+Com as dependências do projeto instaladas e o token configurado:
 
 ```sh
 npm run dev
 ```
 
-### Verificar tipos, compilar e minificar para produção
+Para validar tipos e gerar a versão de produção:
 
 ```sh
 npm run build
 ```
+
+Este produto usa a API do TMDB, mas não é endossado nem certificado pelo TMDB.
