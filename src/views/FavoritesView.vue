@@ -16,7 +16,7 @@ const { items, isLoading, errorMessage, retry } = useFavoriteItems()
     <CatalogSection
       :items="items"
       title="Minha lista"
-      empty-message="Sua lista está vazia. Adicione favoritos pelos cards do catálogo."
+      empty-message="Sua lista está vazia. Adicione títulos aos favoritos nos resultados da busca."
       :is-loading="isLoading"
       :error-message="errorMessage"
       @retry="retry"

@@ -34,7 +34,7 @@ const navItems = [
     <footer class="site-footer text-center mt-5 pt-4">
       <p class="mb-1">CINEHUB · Sua próxima sessão começa aqui.</p>
       <small>
-        Este produto usa a API do TMDB, mas não é endossado nem certificado pelo TMDB.
+        Este produto usa dados fornecidos pela OMDb API.
         <a href="https://www.themoviedb.org/" target="_blank" rel="noopener noreferrer">The Movie Database</a>
       </small>
       <small>&copy; {{ new Date().getFullYear() }} CineHub</small>

@@ -62,8 +62,8 @@ defineProps<{ item: CatalogItem }>()
               <dd>{{ item.status }}</dd>
             </div>
             <div v-if="item.originalLanguage" class="col-6 col-lg-3">
-              <dt>Idioma original</dt>
-              <dd>{{ item.originalLanguage.toUpperCase() }}</dd>
+              <dt>Idioma</dt>
+              <dd>{{ item.originalLanguage }}</dd>
             </div>
           </dl>
 
@@ -79,7 +79,7 @@ defineProps<{ item: CatalogItem }>()
               referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen
             ></iframe>
-            <span v-else class="trailer-unavailable">Trailer não disponível</span>
+            <span v-else class="trailer-unavailable">Trailer não fornecido pela OMDb</span>
           </div>
         </div>
       </div>

@@ -4,9 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "run-p --race dev:tmdb-proxy dev:vite",
-    "dev:tmdb-proxy": "node server/tmdbProxy.js",
+    "dev": "run-p --race dev:omdb-proxy dev:vite",
+    "dev:omdb-proxy": "node server/omdbProxy.js",
     "dev:vite": "vite",
+    "start": "node server/omdbProxy.js",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",

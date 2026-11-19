@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import { useNotifications } from '../composables/useNotifications'
 
-const storageKey = 'cinehub-favorites'
+const storageKey = 'cinehub-favorites-omdb'
 
 export const useFavoritesStore = defineStore('favorites', () => {
   const favoriteIds = ref<string[]>(loadFavoriteIds())

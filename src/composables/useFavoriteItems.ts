@@ -16,7 +16,7 @@ export function useFavoriteItems() {
     controller = new AbortController()
     const currentRequest = ++requestId
     const entries = favorites.favoriteIds.flatMap((id) => {
-      const match = /^(movie|series):(\d+)$/.exec(id)
+      const match = /^(movie|series):(tt\d+)$/i.exec(id)
       if (!match?.[2]) return []
       return [{ id: match[2], type: match[1] as CatalogItemType }]
     })

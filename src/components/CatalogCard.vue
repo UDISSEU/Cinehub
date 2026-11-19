@@ -7,7 +7,7 @@ import { useImageFallback } from '../utils/imageFallback'
 const props = defineProps<{ item: CatalogItem }>()
 const detailsRoute = computed(() => ({
   name: props.item.type === 'movie' ? 'movie-details' : 'series-details',
-  params: { id: props.item.tmdbId },
+  params: { id: props.item.imdbId },
 }))
 </script>
 

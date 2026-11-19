@@ -1,9 +1,8 @@
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { CatalogGenre, CatalogItem, SearchFilters } from '../types/catalog'
-import { getGenres, searchCatalog } from '../services/tmdb'
+import type { CatalogItem, SearchFilters } from '../types/catalog'
+import { searchCatalog } from '../services/omdb'
 
-const ratingOptions = [5, 7, 8, 9]
 const currentYear = new Date().getFullYear()
 const years = Array.from({ length: currentYear - 1899 }, (_, index) => String(currentYear - index))
 
@@ -17,7 +16,6 @@ export function useSearchResults() {
   const items = ref<CatalogItem[]>([])
   const totalResults = ref(0)
   const totalPages = ref(1)
-  const genres = ref<CatalogGenre[]>([])
   const isLoading = ref(true)
   const errorMessage = ref('')
   let controller: AbortController | undefined
@@ -28,9 +26,7 @@ export function useSearchResults() {
     const type = queryValue(route.query.tipo)
     return type === 'movie' || type === 'series' ? type : ''
   })
-  const selectedGenre = computed(() => queryValue(route.query.genero))
   const selectedYear = computed(() => queryValue(route.query.ano))
-  const selectedRating = computed(() => queryValue(route.query.nota))
   const requestedPage = computed(() => Math.max(1, Number(queryValue(route.query.pagina)) || 1))
   const currentPage = computed(() => Math.min(requestedPage.value, totalPages.value))
   const filteredItems = computed(() => items.value)
@@ -43,24 +39,18 @@ export function useSearchResults() {
     const filters: SearchFilters = {
       query: query.value,
       type: selectedType.value,
-      genre: selectedGenre.value,
       year: selectedYear.value,
-      rating: selectedRating.value,
       page: requestedPage.value,
     }
 
     isLoading.value = true
     errorMessage.value = ''
     try {
-      const [result, availableGenres] = await Promise.all([
-        searchCatalog(filters, signal),
-        getGenres(signal),
-      ])
+      const result = await searchCatalog(filters, signal)
       if (currentRequest !== requestId) return
       items.value = result.items
       totalResults.value = result.totalResults
       totalPages.value = result.totalPages
-      genres.value = availableGenres
     } catch (error) {
       if (
         currentRequest !== requestId ||
@@ -99,12 +89,8 @@ export function useSearchResults() {
     query,
     filters: {
       selectedType,
-      selectedGenre,
       selectedYear,
-      selectedRating,
-      genres,
       years,
-      ratingOptions,
     },
     filteredItems,
     pageItems: filteredItems,

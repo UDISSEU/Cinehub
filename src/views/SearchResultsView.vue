@@ -24,7 +24,7 @@ const {
     <PageHeading
       eyebrow="Encontre sua próxima sessão"
       title="Buscar"
-      :description="query ? `Resultados para “${query}” no TMDB.` : 'Explore filmes e séries do TMDB.'"
+      :description="query ? `Resultados para “${query}” na OMDb.` : 'Pesquise filmes e séries por título.'"
     />
 
     <form class="search-filters" aria-label="Filtros de busca" @submit.prevent>
@@ -42,20 +42,6 @@ const {
       </label>
 
       <label>
-        <span>Gênero</span>
-        <select
-          class="form-select"
-          :value="filters.selectedGenre.value"
-          @change="setFilter('genero', ($event.target as HTMLSelectElement).value)"
-        >
-          <option value="">Todos os gêneros</option>
-          <option v-for="genre in filters.genres.value" :key="genre.name" :value="genre.name">
-            {{ genre.name }}
-          </option>
-        </select>
-      </label>
-
-      <label>
         <span>Ano</span>
         <select
           class="form-select"
@@ -68,35 +54,24 @@ const {
           </option>
         </select>
       </label>
-
-      <label>
-        <span>Avaliação mínima</span>
-        <select
-          class="form-select"
-          :value="filters.selectedRating.value"
-          @change="setFilter('nota', ($event.target as HTMLSelectElement).value)"
-        >
-          <option value="">Qualquer avaliação</option>
-          <option v-for="rating in filters.ratingOptions" :key="rating" :value="rating">
-            {{ rating }}+ / 10
-          </option>
-        </select>
-      </label>
     </form>
 
-    <div v-if="isLoading" class="search-loading" role="status" aria-live="polite">
+    <p v-if="!query" class="search-prompt">
+      Digite um título na barra de busca para consultar a OMDb.
+    </p>
+    <div v-if="query && isLoading" class="search-loading" role="status" aria-live="polite">
       <span class="loading-spinner" aria-hidden="true"></span>
-      <span>Buscando filmes e séries no TMDB...</span>
+      <span>Buscando filmes e séries na OMDb...</span>
     </div>
     <div v-else-if="errorMessage" class="search-loading search-error" role="alert">
       <p>{{ errorMessage }}</p>
       <button class="btn btn-outline-light" type="button" @click="retry">Tentar novamente</button>
     </div>
-    <template v-else>
+    <template v-else-if="query">
       <CatalogSection
         :items="pageItems"
         :title="`${totalResults} resultado${totalResults === 1 ? '' : 's'}`"
-        :empty-message="query ? 'Nenhum título encontrado. Tente ajustar os filtros ou o termo pesquisado.' : 'Nenhum título corresponde aos filtros selecionados.'"
+        empty-message="Nenhum título encontrado. Tente ajustar os filtros ou o termo pesquisado."
       />
 
       <nav v-if="pageCount > 1" class="pagination-nav" aria-label="Paginação dos resultados">
@@ -123,12 +98,18 @@ const {
 <style scoped>
 .search-filters {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   padding: 18px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.035);
+}
+
+.search-prompt {
+  margin: 28px 0;
+  color: rgba(255, 255, 255, 0.64);
+  text-align: center;
 }
 
 .search-filters label {
@@ -212,15 +193,11 @@ const {
 
 @media (max-width: 767.98px) {
   .search-filters {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 @media (max-width: 420px) {
-  .search-filters {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .pagination-nav {
     gap: 10px;
     font-size: 0.85rem;

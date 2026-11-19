@@ -4,7 +4,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
-const tmdbProxyPort = Number(process.env.TMDB_PROXY_PORT || 4175)
+const omdbProxyPort = Number(process.env.OMDB_PROXY_PORT || 4175)
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -19,8 +19,8 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api/tmdb': {
-        target: `http://127.0.0.1:${tmdbProxyPort}`,
+      '/api/omdb': {
+        target: `http://127.0.0.1:${omdbProxyPort}`,
         changeOrigin: true,
       },
     },

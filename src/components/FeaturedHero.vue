@@ -7,7 +7,7 @@ import { useImageFallback } from '../utils/imageFallback'
 const props = defineProps<{ item: CatalogItem }>()
 const detailsRoute = computed(() => ({
   name: props.item.type === 'movie' ? 'movie-details' : 'series-details',
-  params: { id: props.item.tmdbId },
+  params: { id: props.item.imdbId },
 }))
 </script>
 
@@ -56,7 +56,7 @@ const detailsRoute = computed(() => ({
           <h2>{{ item.title }}</h2>
         </div>
         <span v-if="item.rating" class="floating-badge info-badge">
-          <span class="tiny-label">Nota TMDB</span>
+          <span class="tiny-label">Nota IMDb</span>
           <strong>{{ item.rating.toFixed(1) }}</strong>
         </span>
       </RouterLink>

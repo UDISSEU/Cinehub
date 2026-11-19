@@ -51,9 +51,10 @@ const goBack = useGoBack({ name: props.type === 'movie' ? 'movies' : 'series' })
       <div class="details-lower">
         <MediaCredits :item="item" />
         <CatalogSection
+          v-if="item.relatedItems.length"
           :items="item.relatedItems"
           title="Títulos relacionados"
-          empty-message="O TMDB não retornou títulos relacionados."
+          empty-message="Nenhum título relacionado disponível."
         />
       </div>
     </template>

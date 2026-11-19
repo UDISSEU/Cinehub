@@ -80,7 +80,7 @@ const routes = [
       if (!item) return { name: 'not-found' }
       return {
         name: item.type === 'movie' ? 'movie-details' : 'series-details',
-        params: { id: item.tmdbId },
+        params: { id: item.imdbId },
       }
     },
   },

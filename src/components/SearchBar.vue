@@ -2,7 +2,7 @@
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSearchHistory } from '../composables/useSearchHistory'
-import { searchSuggestions } from '../services/tmdb'
+import { searchSuggestions } from '../services/omdb'
 import type { CatalogItem } from '../types/catalog'
 import { useImageFallback } from '../utils/imageFallback'
 

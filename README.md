@@ -1,29 +1,35 @@
 # CineHub
 
-Aplicação de descoberta de filmes e séries com Vue 3, Vite, Vue Router e dados do TMDB.
+Aplicação de busca de filmes e séries com Vue 3, Vite, Vue Router e dados da OMDb.
 
 ## Configuração da API
 
-1. Crie uma conta no [TMDB](https://www.themoviedb.org/) e solicite o **API Read Access Token** nas configurações de API.
-2. Crie `.env.local` na raiz do projeto (use `.env.example` como modelo) e configure:
+1. Obtenha uma chave da [OMDb API](https://www.omdbapi.com/).
+2. Crie `.env.local` na raiz do projeto e configure:
 
    ```env
-   TMDB_ACCESS_TOKEN=
+   OMDB_API_KEY=
    ```
 
-3. Execute `npm run dev`. O comando inicia o proxy Node local e o Vite; o token só é lido pelo servidor intermediário.
+3. Preencha `OMDB_API_KEY` e execute `npm run dev`. O comando inicia o proxy Node local e o Vite.
 
-Preencha `TMDB_ACCESS_TOKEN` com o API Read Access Token e reinicie o servidor. O frontend usa somente `/api/tmdb/3`; o proxy mantém a credencial no processo Node. Não configure o token com prefixo `VITE_`.
+O frontend usa `/api/omdb`; o proxy mantém a chave no processo Node. Não configure a chave com prefixo `VITE_`.
 
-Os arquivos `.env`, `.env.local` e `.env.*.local` são ignorados pelo Git. Não configure o token como `VITE_TMDB_ACCESS_TOKEN`: variáveis com prefixo `VITE_` ficam expostas no navegador. O proxy lê `TMDB_ACCESS_TOKEN` somente no processo Node.
+Os arquivos `.env`, `.env.local` e `.env.*.local` são ignorados pelo Git. Variáveis com prefixo `VITE_` ficam expostas no navegador; mantenha `OMDB_API_KEY` somente no servidor.
 
-`.env.local` é ignorado pelo Git. Nunca use o prefixo `VITE_` no token: variáveis com esse prefixo são incluídas no bundle do navegador. O proxy em `server/tmdbProxy.js` encaminha somente requisições GET para o host fixo do TMDB e mantém o Bearer token no processo Node. Em produção, implante esse proxy em um backend e configure o servidor web para encaminhar `/api/tmdb/3` para ele; não publique o token no frontend.
+O proxy em `server/omdbProxy.js` encaminha somente requisições GET para o host fixo da OMDb e mantém a chave no processo Node. A OMDb permite busca por título e detalhes, mas não fornece listas de tendências, popularidade, gêneros pesquisáveis, trailers ou títulos similares.
 
-`src/services/tmdb.ts` centraliza autenticação Bearer, idioma `pt-BR`, URLs de imagem, cache de respostas, paginação e tratamento de erros de conexão, autenticação e limite de requisições.
+`src/services/omdb.ts` centraliza busca, detalhes por IMDb ID, paginação, cache de respostas e tratamento de erros de conexão, autenticação e limite de requisições.
+
+## Publicar no Render
+
+1. Envie o repositório ao GitHub e crie um Blueprint no [Render](https://render.com/) apontando para ele. O arquivo `render.yaml` configura a compilação e inicia o servidor que entrega o site e encaminha as chamadas à OMDb.
+2. Quando solicitado, informe `OMDB_API_KEY` como variável secreta. Também é possível configurá-la em **Environment** no painel do serviço.
+3. Faça o deploy. O Render recompila o site e o servidor usa a variável secreta para acessar a OMDb. Quem abrir o endereço publicado não precisa criar `.env.local`.
 
 ## Executar
 
-Com as dependências do projeto instaladas e o token configurado:
+Com as dependências do projeto instaladas e a chave configurada:
 
 ```sh
 npm run dev
@@ -35,4 +41,4 @@ Para validar tipos e gerar a versão de produção:
 npm run build
 ```
 
-Este produto usa a API do TMDB, mas não é endossado nem certificado pelo TMDB.
+Este produto usa dados fornecidos pela OMDb API.
