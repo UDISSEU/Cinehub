@@ -9,6 +9,28 @@ const apiBaseUrl = '/api/omdb'
 const placeholderPoster = '/poster-placeholder.svg'
 const cacheDurationMs = 5 * 60 * 1000
 const maxRetries = 2
+const curatedMovieIds = [
+  'tt0111161',
+  'tt0068646',
+  'tt0468569',
+  'tt0110912',
+  'tt0109830',
+  'tt0133093',
+  'tt0137523',
+  'tt1375666',
+  'tt0816692',
+  'tt6751668',
+  'tt0108052',
+  'tt0167260',
+  'tt0120737',
+  'tt0080684',
+  'tt0102926',
+  'tt0114369',
+  'tt0120338',
+  'tt0126029',
+  'tt0120815',
+  'tt0245429',
+]
 const responseCache = new Map<string, { expiresAt: number; value: unknown }>()
 const inFlightRequests = new Map<string, {
   controller: AbortController
@@ -214,6 +236,30 @@ async function omdbGet<T extends OmdbResponse>(
 
 function emptyPage(page: number): CatalogPage {
   return { items: [], page, totalPages: 1, totalResults: 0 }
+}
+
+export async function getCuratedMovies(
+  page = 1,
+  pageSize = 10,
+  signal?: AbortSignal,
+): Promise<CatalogPage> {
+  const safePageSize = Math.max(1, Math.floor(pageSize))
+  const totalPages = Math.ceil(curatedMovieIds.length / safePageSize)
+  const safePage = Math.min(totalPages, Math.max(1, Math.floor(page)))
+  const start = (safePage - 1) * safePageSize
+  const ids = curatedMovieIds.slice(start, start + safePageSize)
+  const results = await Promise.all(
+    ids.map((imdbId) => omdbGet<OmdbResponse>({ i: imdbId, plot: 'short' }, signal)),
+  )
+
+  return {
+    items: results.flatMap((result) =>
+      result.Type === 'movie' ? [mapResult(result, 'movie')] : [],
+    ),
+    page: safePage,
+    totalPages,
+    totalResults: curatedMovieIds.length,
+  }
 }
 
 function isNotFound(error: unknown): boolean {

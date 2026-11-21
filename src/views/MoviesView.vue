@@ -1,5 +1,9 @@
 <script setup lang="ts">
+import CatalogSection from '../components/CatalogSection.vue'
 import PageHeading from '../components/PageHeading.vue'
+import { useCuratedMovies } from '../composables/useCuratedMovies'
+
+const catalog = useCuratedMovies()
 </script>
 
 <template>
@@ -7,10 +11,21 @@ import PageHeading from '../components/PageHeading.vue'
     <PageHeading
       eyebrow="Catálogo OMDb"
       title="Filmes"
-      description="Pesquise filmes pelo título ou refine a busca por ano."
+      description="Uma seleção de filmes para explorar. Use a busca para encontrar outros títulos."
+    />
+    <CatalogSection
+      :items="catalog.items.value"
+      title="Seleção de filmes"
+      empty-message="Nenhum filme da seleção está disponível."
+      :is-loading="catalog.isLoading.value"
+      :error-message="catalog.errorMessage.value"
+      :page="catalog.page.value"
+      :page-count="catalog.totalPages.value"
+      @retry="catalog.retry"
+      @page-change="catalog.setPage"
     />
     <RouterLink :to="{ name: 'search', query: { tipo: 'movie' } }" class="catalog-search-link">
-      Buscar filmes
+      Buscar outros filmes
     </RouterLink>
   </section>
 </template>

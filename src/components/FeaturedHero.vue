@@ -17,7 +17,7 @@ const detailsRoute = computed(() => ({
     :style="{ '--hero-backdrop': `url('${item.backdrop}')` }"
   >
     <div class="hero-copy col-12 col-lg-6">
-      <span class="eyebrow">Em tendência</span>
+      <span class="eyebrow">Destaque da seleção</span>
       <h1>{{ item.title }}</h1>
       <p v-if="item.tagline" class="hero-tagline">{{ item.tagline }}</p>
       <p>{{ item.description || 'Sinopse não disponível.' }}</p>
@@ -52,7 +52,7 @@ const detailsRoute = computed(() => ({
         <div class="poster-overlay"></div>
         <span class="happy-overlay" aria-hidden="true">😊</span>
         <div class="poster-content">
-          <span class="tag">Em tendência</span>
+          <span class="tag">Destaque</span>
           <h2>{{ item.title }}</h2>
         </div>
         <span v-if="item.rating" class="floating-badge info-badge">

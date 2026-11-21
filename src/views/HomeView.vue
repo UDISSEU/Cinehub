@@ -1,13 +1,30 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import CatalogSection from '../components/CatalogSection.vue'
+import FeaturedHero from '../components/FeaturedHero.vue'
 import PageHeading from '../components/PageHeading.vue'
+import { useCuratedMovies } from '../composables/useCuratedMovies'
+
+const catalog = useCuratedMovies(6)
+const featured = computed(() => catalog.items.value[0])
+const moreMovies = computed(() => catalog.items.value.slice(1))
 </script>
 
 <template>
-  <section class="home-discovery">
+  <div class="home-discovery">
+    <FeaturedHero v-if="featured" :item="featured" />
     <PageHeading
       eyebrow="CineHub"
       title="Encontre seu próximo filme ou série"
       description="Pesquise por título, filtre por tipo e ano, confira os detalhes e salve seus favoritos."
+    />
+    <CatalogSection
+      :items="moreMovies"
+      title="Filmes para descobrir"
+      empty-message="Nenhum filme da seleção está disponível."
+      :is-loading="catalog.isLoading.value"
+      :error-message="catalog.errorMessage.value"
+      @retry="catalog.retry"
     />
     <div class="discovery-actions">
       <RouterLink :to="{ name: 'search' }" class="btn discovery-primary">
@@ -20,24 +37,14 @@ import PageHeading from '../components/PageHeading.vue'
         Explorar séries
       </RouterLink>
     </div>
-    <p class="catalog-note">
-      O catálogo da OMDb é pesquisável por título; ele não oferece listas de tendências ou popularidade.
-    </p>
-  </section>
+    <p class="catalog-note">Esta é uma seleção curada; a OMDb não fornece listas de popularidade.</p>
+  </div>
 </template>
 
 <style scoped>
 .home-discovery {
   display: grid;
-  min-height: 48vh;
-  align-content: center;
-  gap: 24px;
-  padding: clamp(24px, 6vw, 72px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  background:
-    radial-gradient(ellipse at 85% 15%, rgba(240, 68, 82, 0.16), transparent 42%),
-    rgba(255, 255, 255, 0.025);
+  gap: 36px;
 }
 
 .discovery-actions {
@@ -74,4 +81,5 @@ import PageHeading from '../components/PageHeading.vue'
   color: rgba(255, 255, 255, 0.55);
   font-size: 0.9rem;
 }
+
 </style>

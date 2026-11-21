@@ -17,7 +17,7 @@ O frontend usa `/api/omdb`; o proxy mantém a chave no processo Node. Não confi
 
 Os arquivos `.env`, `.env.local` e `.env.*.local` são ignorados pelo Git. Variáveis com prefixo `VITE_` ficam expostas no navegador; mantenha `OMDB_API_KEY` somente no servidor.
 
-O proxy em `server/omdbProxy.js` encaminha somente requisições GET para o host fixo da OMDb e mantém a chave no processo Node. A OMDb permite busca por título e detalhes, mas não fornece listas de tendências, popularidade, gêneros pesquisáveis, trailers ou títulos similares.
+O proxy em `server/omdbProxy.js` encaminha somente requisições GET para o host fixo da OMDb e mantém a chave no processo Node. A OMDb permite busca por título e detalhes, mas não fornece listas de tendências, popularidade, gêneros pesquisáveis, trailers ou títulos similares. As páginas inicial e de filmes mostram uma seleção curada de IMDb IDs; cada filme consome uma solicitação de detalhes da OMDb.
 
 `src/services/omdb.ts` centraliza busca, detalhes por IMDb ID, paginação, cache de respostas e tratamento de erros de conexão, autenticação e limite de requisições.
 
