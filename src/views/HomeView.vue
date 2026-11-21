@@ -37,7 +37,7 @@ const moreMovies = computed(() => catalog.items.value.slice(1))
         Explorar séries
       </RouterLink>
     </div>
-    <p class="catalog-note">Esta é uma seleção curada; a OMDb não fornece listas de popularidade.</p>
+    <p class="catalog-note">O catálogo local fica disponível sem configuração de API.</p>
   </div>
 </template>
 

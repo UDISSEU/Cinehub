@@ -4,33 +4,12 @@ import type {
   CatalogPage,
   SearchFilters,
 } from '../types/catalog'
+import { getLocalItem, getLocalPage, searchLocalCatalog, localCatalog } from './localCatalog'
 
 const apiBaseUrl = '/api/omdb'
 const placeholderPoster = '/poster-placeholder.svg'
 const cacheDurationMs = 5 * 60 * 1000
 const maxRetries = 2
-const curatedMovieIds = [
-  'tt0111161',
-  'tt0068646',
-  'tt0468569',
-  'tt0110912',
-  'tt0109830',
-  'tt0133093',
-  'tt0137523',
-  'tt1375666',
-  'tt0816692',
-  'tt6751668',
-  'tt0108052',
-  'tt0167260',
-  'tt0120737',
-  'tt0080684',
-  'tt0102926',
-  'tt0114369',
-  'tt0120338',
-  'tt0126029',
-  'tt0120815',
-  'tt0245429',
-]
 const responseCache = new Map<string, { expiresAt: number; value: unknown }>()
 const inFlightRequests = new Map<string, {
   controller: AbortController
@@ -243,23 +222,8 @@ export async function getCuratedMovies(
   pageSize = 10,
   signal?: AbortSignal,
 ): Promise<CatalogPage> {
-  const safePageSize = Math.max(1, Math.floor(pageSize))
-  const totalPages = Math.ceil(curatedMovieIds.length / safePageSize)
-  const safePage = Math.min(totalPages, Math.max(1, Math.floor(page)))
-  const start = (safePage - 1) * safePageSize
-  const ids = curatedMovieIds.slice(start, start + safePageSize)
-  const results = await Promise.all(
-    ids.map((imdbId) => omdbGet<OmdbResponse>({ i: imdbId, plot: 'short' }, signal)),
-  )
-
-  return {
-    items: results.flatMap((result) =>
-      result.Type === 'movie' ? [mapResult(result, 'movie')] : [],
-    ),
-    page: safePage,
-    totalPages,
-    totalResults: curatedMovieIds.length,
-  }
+  throwIfAborted(signal)
+  return getLocalPage('movie', page, Math.max(1, Math.floor(pageSize)))
 }
 
 function isNotFound(error: unknown): boolean {
@@ -348,6 +312,9 @@ export async function searchSuggestions(
   const normalizedQuery = query.trim()
   if (normalizedQuery.length < 2) return []
 
+  const localMatches = localCatalog.filter((item) => item.title.toLocaleLowerCase('pt-BR').includes(normalizedQuery.toLocaleLowerCase('pt-BR'))).slice(0, 6)
+  return localMatches
+
   const result = await getSearchResults(normalizedQuery, '', '', 1, signal)
   return (result.Search ?? [])
     .flatMap((entry) => {
@@ -363,6 +330,9 @@ export async function searchCatalog(
 ): Promise<CatalogPage> {
   const query = filters.query.trim()
   if (!query) return emptyPage(filters.page)
+
+  const localResults = searchLocalCatalog(filters)
+  return localResults
 
   const pageNumber = Math.min(100, Math.max(1, filters.page))
   const result = await getSearchResults(query, filters.type, filters.year, pageNumber, signal)
@@ -386,6 +356,8 @@ export async function getCatalogItem(
   signal?: AbortSignal,
 ): Promise<CatalogItem | undefined> {
   const imdbId = String(id)
+  const localItem = getLocalItem(imdbId, type)
+  if (localItem) return localItem
   if (!/^tt\d+$/i.test(imdbId)) return undefined
 
   try {

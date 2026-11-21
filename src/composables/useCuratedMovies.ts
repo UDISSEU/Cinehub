@@ -1,8 +1,8 @@
 import { onBeforeUnmount, ref, watch } from 'vue'
 import type { CatalogItem } from '../types/catalog'
-import { getCuratedMovies } from '../services/omdb'
+import { getLocalPage } from '../services/localCatalog'
 
-export function useCuratedMovies(pageSize = 10) {
+export function useCuratedMovies(pageSize = 10, type: 'movie' | 'series' = 'movie') {
   const items = ref<CatalogItem[]>([])
   const page = ref(1)
   const totalPages = ref(1)
@@ -19,7 +19,8 @@ export function useCuratedMovies(pageSize = 10) {
     errorMessage.value = ''
 
     try {
-      const result = await getCuratedMovies(page.value, pageSize, controller.signal)
+      if (controller.signal.aborted) return
+      const result = getLocalPage(type, page.value, pageSize)
       if (currentRequest !== requestId) return
       items.value = result.items
       totalPages.value = result.totalPages

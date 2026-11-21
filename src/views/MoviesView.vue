@@ -9,14 +9,14 @@ const catalog = useCuratedMovies()
 <template>
   <section class="catalog-page">
     <PageHeading
-      eyebrow="Catálogo OMDb"
+      eyebrow="Catálogo local"
       title="Filmes"
-      description="Uma seleção de filmes para explorar. Use a busca para encontrar outros títulos."
+      description="Explore filmes incluídos no projeto. O catálogo funciona sem chave de API."
     />
     <CatalogSection
       :items="catalog.items.value"
       title="Seleção de filmes"
-      empty-message="Nenhum filme da seleção está disponível."
+      empty-message="Nenhum filme disponível."
       :is-loading="catalog.isLoading.value"
       :error-message="catalog.errorMessage.value"
       :page="catalog.page.value"
